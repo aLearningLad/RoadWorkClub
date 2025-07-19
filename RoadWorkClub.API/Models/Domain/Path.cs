@@ -1,4 +1,6 @@
-﻿namespace RoadWorkClub.API.Models.Domain
+﻿using RoadWorkClub.API.Enums;
+
+namespace RoadWorkClub.API.Models.Domain
 {
     public class Path
     {
@@ -13,7 +15,7 @@
         public TimeSpan RecommendedStartTime { get; set; }
 
         // navigation properties
-        public ICollection<Stopover> Stopovers { get; set; }
-        public Difficulty DifficultyRating { get; set; }
+        public ICollection<Stopover> Stopovers { get; set; } = new List<Stopover>(); // very NB---> initialization ensures that if no stopovers are added for this path, AT LEAST it returns an empty list, never null
+        public Difficulty DifficultyRating { get; set; } // this is from my enum
     }
 }

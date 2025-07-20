@@ -2,7 +2,7 @@
 
 namespace RoadWorkClub.API.Models.Domain
 {
-    public class Path
+    public class Pathway
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

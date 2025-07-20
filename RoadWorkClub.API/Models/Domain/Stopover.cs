@@ -11,7 +11,7 @@
 
 
         // Nav property
-        public Path Path { get; set; }
+        public Pathway Path { get; set; }
 
     }
 }

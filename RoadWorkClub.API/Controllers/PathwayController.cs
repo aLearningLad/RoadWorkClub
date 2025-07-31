@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using RoadWorkClub.API.Data;
 using RoadWorkClub.API.Models.Domain;
 
 namespace RoadWorkClub.API.Controllers
@@ -8,28 +10,58 @@ namespace RoadWorkClub.API.Controllers
     [ApiController]
     public class PathwayController : ControllerBase
     {
+        private readonly RoadWorkClubDbContext rwcdbContext;
 
-        // get all single pathway
+        public PathwayController(RoadWorkClubDbContext rwcdbContext)
+        {
+            this.rwcdbContext = rwcdbContext;
+        }
+
+        // get all pathways
         [HttpGet]
         public IActionResult GetAll()
         {
 
-            var pathways = new List<Pathway>
+            var allpathways = rwcdbContext.Path.ToList();
+
+            if(allpathways.Any())
             {
-                new Pathway
-                {
-                    Id = Guid.NewGuid(),
-                    CreatedAt = DateTime.Now,
-                    AvgDuration = new TimeSpan(1,45,55),
-                    Description = "Route from Princess Park primary to Edenvale railway",
-                    DifficultyRating = Enums.Difficulty.Easy,
-                    DistanceInKm = 22.3,
-                    IsLoop = false,
-                    Name = "Thanos' Date",
-                    RecommendedStartTime = new TimeSpan(16,30,00),
-                }
-            };
-            return Ok(pathways);
+                return Ok(allpathways);
+            }
+
+            return Ok("The database is empty, bruv");
+
+            
+       
+        
+        
         }
+
+        // get a single pathway by it's ID
+        [HttpGet]
+        [Route("{id: Guid}")]
+        public IActionResult GetById([FromRoute]Guid id) {
+
+
+            // get Id from params
+            Guid pathwayId = id;
+
+            // try getting it from database
+            var res = rwcdbContext.Path.Find(pathwayId);
+            
+
+
+            // if it exists, cool. Return it
+            if (res != null)
+            {
+                return Ok($"The path you requested: {res}");
+            }
+
+            // if it doesn't exist, return error code and a short descriptive message
+            return NotFound("No pathway with that ID currently exists");
+        
+        }
+    
+    
     }
 }
